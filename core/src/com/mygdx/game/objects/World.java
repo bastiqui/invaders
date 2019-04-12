@@ -14,13 +14,13 @@ public class World {
 
     int WORLD_WIDTH, WORLD_HEIGHT;
 
-    public World(int WORLD_WIDTH, int WORLD_HEIGHT, float alienSpeed){
+    public World(int WORLD_WIDTH, int WORLD_HEIGHT, float alienSpeed, int alienGoDown){
         this.WORLD_WIDTH = WORLD_WIDTH;
         this.WORLD_HEIGHT = WORLD_HEIGHT;
 
         space = new Space();
         ship = new Ship(WORLD_WIDTH/2);
-        alienArmy = new AlienArmy(WORLD_WIDTH, WORLD_HEIGHT, alienSpeed);
+        alienArmy = new AlienArmy(WORLD_WIDTH, WORLD_HEIGHT, alienSpeed, alienGoDown);
     }
 
     public void render(float delta, SpriteBatch batch, Assets assets){

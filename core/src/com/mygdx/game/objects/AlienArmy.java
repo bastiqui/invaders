@@ -10,9 +10,10 @@ import java.util.Random;
 
 public class AlienArmy {
 
-    int x, y, maxX;
+    int x, y, maxX, downSpeed;
 
     float speed;
+    boolean bajar;
 
     public Array<Alien> aliens;
     Array<AlienShoot> shoots;
@@ -20,12 +21,13 @@ public class AlienArmy {
     Timer moveTimer, shootTimer;
     Random random = new Random();
 
-    AlienArmy(int WORLD_WIDTH, int WORLD_HEIGHT, float speed){
+    AlienArmy(int WORLD_WIDTH, int WORLD_HEIGHT, float speed, int downSpeed){
 
         this.x = 0;
         this.y = WORLD_HEIGHT-30;
         this.maxX = 60;
         this.speed = speed;
+        this.downSpeed = downSpeed;
 
         aliens = new Array<Alien>();
         shoots = new Array<AlienShoot>();
@@ -84,14 +86,22 @@ public class AlienArmy {
             if(x > maxX){
                 x = maxX;
                 speed *= -1;
+                y -= downSpeed;
+                bajar = true;
             } else if(x < 0){
                 x = 0;
                 speed *= -1;
+                y -= downSpeed;
+                bajar = true;
             }
 
             for (Alien alien : aliens) {
                 alien.position.x += speed;
+                if (bajar) {
+                    alien.position.y -= downSpeed;
+                }
             }
+            bajar = false;
         }
     }
 

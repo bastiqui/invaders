@@ -1,9 +1,12 @@
 package com.mygdx.game.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.Controls;
 import com.mygdx.game.SpaceInvaders;
 import com.mygdx.game.objects.World;
 
@@ -33,7 +36,7 @@ public class GameScreen extends SpaceInvadersScreen {
 
         spriteBatch = new SpriteBatch();
 
-        world = new World(SCENE_WIDTH, SCENE_HEIGHT, speed);
+        world = new World(SCENE_WIDTH, SCENE_HEIGHT, speed, 5);
     }
 
     @Override
@@ -41,10 +44,14 @@ public class GameScreen extends SpaceInvadersScreen {
         spriteBatch.setProjectionMatrix(camera.combined);
 
         if (world.alienArmy.aliens.isEmpty()) {
-            speed += speed;
-            world = new World(SCENE_WIDTH, SCENE_HEIGHT, speed);
+            speed += 5f;
+            world = new World(SCENE_WIDTH, SCENE_HEIGHT, speed, 10);
         } else {
             world.render(delta, spriteBatch, assets);
+        }
+
+        if (Controls.reset()) {
+            world = new World(SCENE_WIDTH, SCENE_HEIGHT, speed, 5);
         }
     }
 
