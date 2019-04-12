@@ -1,8 +1,8 @@
 package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -20,6 +20,7 @@ public class GameScreen extends SpaceInvadersScreen {
     public int SCENE_WIDTH = 384;
     public int SCENE_HEIGHT = 256;
     float speed = 8f;
+    double stateTime = 0;
 
     World world;
 
@@ -51,7 +52,12 @@ public class GameScreen extends SpaceInvadersScreen {
         }
 
         if (Controls.reset()) {
+            stateTime += delta;
             world = new World(SCENE_WIDTH, SCENE_HEIGHT, speed, 5);
+        }
+
+        if (Controls.closeGame()) {
+            Gdx.app.exit();
         }
     }
 

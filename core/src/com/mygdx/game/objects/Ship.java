@@ -1,5 +1,6 @@
 package com.mygdx.game.objects;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +11,9 @@ import static com.mygdx.game.objects.Ship.State.*;
 
 public class Ship {
 
+    public boolean endGame;
+    private int WIDTH, HEIGHT;
+
     enum State {
         IDLE, LEFT, RIGHT, SHOOT, DYING, DEAD
     }
@@ -19,15 +23,18 @@ public class Ship {
     State state;
     float stateTime;
     float speed = 5;
+    BitmapFont font = new BitmapFont();
 
     TextureRegion frame;
 
     Weapon weapon;
 
-    Ship(int initialPosition){
+    Ship(int initialPosition, int WIDTH, int HEIGHT){
         position = new Vector2(initialPosition, 10);
         state = IDLE;
         stateTime = 0;
+        this.WIDTH = WIDTH;
+        this.HEIGHT = HEIGHT;
 
         weapon = new Weapon();
     }
@@ -59,41 +66,46 @@ public class Ship {
     void render(SpriteBatch batch){
         batch.draw(frame, position.x, position.y);
         weapon.render(batch);
+        if (endGame) {
+            font.draw(batch, "GAME OVER\nR to reset.", (WIDTH/2) - (WIDTH / 8), HEIGHT/2);
+        }
     }
 
     public void update(float delta, Assets assets) {
         stateTime += delta;
 
-        if (state != DYING) {
-            if (Controls.isLeftPressed()) {
-                moveLeft();
-            } else if (Controls.isRightPressed()) {
-                moveRight();
-            } else if (state != DYING) {
-                idle();
+        if (!endGame) {
+            if (state != DYING) {
+                if (Controls.isLeftPressed()) {
+                    moveLeft();
+                } else if (Controls.isRightPressed()) {
+                    moveRight();
+                } else if (state != DYING) {
+                    idle();
+                }
+
+                if (Controls.isShootPressed()) {
+                    shoot();
+                    assets.shootSound.play();
+                }
             }
 
-            if(Controls.isShootPressed()) {
-                shoot();
-                assets.shootSound.play();
+            if (state == DYING) {
+                if (assets.navedying.isAnimationFinished(stateTime)) {
+                    state = DEAD;
+                }
             }
-        }
 
-        if (state == DYING) {
-            if (assets.navedying.isAnimationFinished(stateTime)) {
-                state = DEAD;
+            if (state == DEAD) {
+                state = IDLE;
+                position.x = 0;
+                stateTime = 0;
             }
+
+            setFrame(assets);
+
+            weapon.update(delta, assets);
         }
-
-        if (state == DEAD) {
-            state = IDLE;
-            position.x = 0;
-            stateTime = 0;
-        }
-
-        setFrame(assets);
-
-        weapon.update(delta, assets);
     }
 
     void idle(){

@@ -17,6 +17,10 @@ public class Controls {
     }
 
     public static boolean reset() {
-        return Gdx.input.isKeyPressed(Input.Keys.R) || Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+        return Gdx.input.isKeyPressed(Input.Keys.R);
+    }
+
+    public static boolean closeGame() {
+        return Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
     }
 }

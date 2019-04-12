@@ -19,7 +19,7 @@ public class World {
         this.WORLD_HEIGHT = WORLD_HEIGHT;
 
         space = new Space();
-        ship = new Ship(WORLD_WIDTH/2);
+        ship = new Ship(WORLD_WIDTH/2, WORLD_WIDTH, WORLD_HEIGHT);
         alienArmy = new AlienArmy(WORLD_WIDTH, WORLD_HEIGHT, alienSpeed, alienGoDown);
     }
 
@@ -28,7 +28,6 @@ public class World {
         update(delta, assets, batch);
 
         batch.begin();
-        checkLevelUp(assets, batch);
         space.render(batch);
         ship.render(batch);
         alienArmy.render(batch);
@@ -43,17 +42,21 @@ public class World {
         checkCollisions(assets);
     }
 
-    private void checkLevelUp(Assets assets, SpriteBatch batch) {
-        if (alienArmy.aliens.isEmpty()) {
-            font.draw(batch, "LEVEL UP", WORLD_WIDTH / 2, WORLD_HEIGHT /2);
-        }
-    }
-
     private void checkCollisions(Assets assets) {
         checkNaveInWorld();
         checkShootsInWorld();
         checkShootsToAlien(assets);
         checkShootsToShip();
+        checkEndGame();
+    }
+
+    private void checkEndGame() {
+        for (Alien alien: alienArmy.aliens) {
+            if (alien.position.y <= (ship.position.y + 20)) {
+                alienArmy.endGame = true;
+                ship.endGame = true;
+            }
+        }
     }
 
     private void checkShootsToShip() {

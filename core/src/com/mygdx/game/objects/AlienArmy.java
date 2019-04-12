@@ -20,12 +20,13 @@ public class AlienArmy {
 
     Timer moveTimer, shootTimer;
     Random random = new Random();
+    boolean endGame = false;
 
     AlienArmy(int WORLD_WIDTH, int WORLD_HEIGHT, float speed, int downSpeed){
 
         this.x = 0;
         this.y = WORLD_HEIGHT-30;
-        this.maxX = 60;
+        this.maxX = 65;
         this.speed = speed;
         this.downSpeed = downSpeed;
 
@@ -53,20 +54,23 @@ public class AlienArmy {
         moveTimer.update(delta);
         shootTimer.update(delta);
 
-        move();
-        shoot(assets);
+        if (!endGame) {
 
-        for(Alien alien: aliens) {
-            alien.update(delta, assets);
+            move();
+            shoot(assets);
+
+            for (Alien alien : aliens) {
+                alien.update(delta, assets);
+            }
+
+            for (AlienShoot shoot : shoots) {
+                shoot.update(delta, assets);
+            }
+
+
+            removeDeadAliens();
+            removeShoots();
         }
-
-        for(AlienShoot shoot: shoots){
-            shoot.update(delta, assets);
-        }
-
-
-        removeDeadAliens();
-        removeShoots();
     }
 
 
